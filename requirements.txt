@@ -7,3 +7,4 @@ python-dotenv
 faker
 django-filter
 djangorestframework-simplejwt
+coverage
