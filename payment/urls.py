@@ -1,11 +1,12 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from payment.apps import PaymentConfig
 from payment.views import PaymentListAPIView
 
 app_name = PaymentConfig.name
 
-urlpatterns = [
-    path('payment/', PaymentListAPIView.as_view(), name='payment_list'),
+router = DefaultRouter()
+router.register(r'payments', PaymentListAPIView, basename='payment')
 
-]
+urlpatterns = [
+              ] + router.urls
