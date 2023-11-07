@@ -6,6 +6,7 @@ from course.models import Course, Lesson, Subscription
 from course.paginators import CoursePaginator, LessonPaginator
 from course.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from permissions import IsOwner, IsModerator
+from course.tasks import send_email_course_update
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -71,6 +72,8 @@ class SubscriptionCourseCreateAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data={'user': request.user.id, 'course': course.id})
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
+        send_email_course_update.delay(course_id)
 
         return Response({'detail': 'Подписка на данный курс выполнена успешно!'}, status=status.HTTP_201_CREATED)
 
