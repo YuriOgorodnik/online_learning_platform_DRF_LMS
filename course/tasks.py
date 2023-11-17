@@ -15,11 +15,11 @@ def send_email_course_update(course_pk):
     course = Course.objects.get(pk=course_pk)
     for subscriber in subscribers:
         send_mail(
-            subject=f'Внимание! Наш курс {course} обновлён.',
-            message='В данном курсе появились новые материалы',
+            subject=f"Внимание! Наш курс {course} обновлён.",
+            message="В данном курсе появились новые материалы",
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[subscriber.user.email],
-            fail_silently=False
+            fail_silently=False,
         )
 
 
