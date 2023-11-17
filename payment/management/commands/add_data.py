@@ -12,21 +12,21 @@ fake = Faker()
 
 class Command(BaseCommand):
     """
-        Команда для сброса и добавления тестовых данных в модель Payment.
+    Команда для сброса и добавления тестовых данных в модель Payment.
 
-        Метод `handle` выполняет следующие шаги:
-        1. Удаляет все записи в моделях Payment, Lesson и Course.
-        2. Создает 5 пользователей и сохраняет их в список.
-        3. Создает 5 курсов и для каждого курса создает 3 урока.
-        4. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
+    Метод `handle` выполняет следующие шаги:
+    1. Удаляет все записи в моделях Payment, Lesson и Course.
+    2. Создает 5 пользователей и сохраняет их в список.
+    3. Создает 5 курсов и для каждого курса создает 3 урока.
+    4. Создает 20 случайных платежей, связанных с пользователями, курсами и уроками.
 
-        Attributes:
-            help (str): Описание команды для вывода при запуске `python manage.py help`.
+    Attributes:
+        help (str): Описание команды для вывода при запуске `python manage.py help`.
     """
-    help = 'Reset and add sample payment data to the Payment model'
+
+    help = "Reset and add sample payment data to the Payment model"
 
     def handle(self, *args, **kwargs):
-
         Payment.objects.all().delete()
         Lesson.objects.all().delete()
         Course.objects.all().delete()
@@ -59,12 +59,14 @@ class Command(BaseCommand):
 
         for _ in range(20):
             user = random.choice(users)
-            payment_date = fake.date_between(start_date='-30d', end_date='today')
+            payment_date = fake.date_between(start_date="-30d", end_date="today")
             amount = Decimal(random.uniform(10, 100))
-            payment_method = random.choice(['cash', 'transfer'])
+            payment_method = random.choice(["cash", "transfer"])
 
             is_course = random.choice([True, False])
-            course_or_lesson = random.choice(courses) if is_course else random.choice(lessons)
+            course_or_lesson = (
+                random.choice(courses) if is_course else random.choice(lessons)
+            )
 
             Payment.objects.create(
                 user=user,
