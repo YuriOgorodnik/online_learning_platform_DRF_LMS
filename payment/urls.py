@@ -6,7 +6,6 @@ from payment.views import PaymentListAPIView
 app_name = PaymentConfig.name
 
 router = DefaultRouter()
-router.register(r'payments', PaymentListAPIView, basename='payment')
+router.register(r"payments", PaymentListAPIView, basename="payment")
 
-urlpatterns = [
-              ] + router.urls
+urlpatterns = [] + router.urls
