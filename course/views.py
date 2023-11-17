@@ -4,7 +4,11 @@ from rest_framework.response import Response
 
 from course.models import Course, Lesson, Subscription
 from course.paginators import CoursePaginator, LessonPaginator
-from course.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
+from course.serializers import (
+    CourseSerializer,
+    LessonSerializer,
+    SubscriptionSerializer,
+)
 from permissions import IsOwner, IsModerator
 from course.tasks import send_email_course_update
 
@@ -15,13 +19,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = CoursePaginator
 
     def get_permissions(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             permission_classes = [IsOwner | IsModerator | IsAdminUser]
-        elif self.action == 'create':
+        elif self.action == "create":
             permission_classes = [IsAdminUser]
-        elif self.action == 'destroy':
+        elif self.action == "destroy":
             permission_classes = [IsOwner | IsAdminUser]
-        elif self.action == 'update':
+        elif self.action == "update":
             permission_classes = [IsOwner | IsModerator | IsAdminUser]
         else:
             permission_classes = [IsAuthenticated]
@@ -63,19 +67,27 @@ class SubscriptionCourseCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        course_id = kwargs.get('course_id')
+        course_id = kwargs.get("course_id")
         course = Course.objects.get(pk=course_id)
 
         if Subscription.objects.filter(user=request.user, course=course).exists():
-            return Response({'detail': 'Вы уже подписаны на данный курс!'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Вы уже подписаны на данный курс!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        serializer = self.get_serializer(data={'user': request.user.id, 'course': course.id})
+        serializer = self.get_serializer(
+            data={"user": request.user.id, "course": course.id}
+        )
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
 
         send_email_course_update.delay(course_id)
 
-        return Response({'detail': 'Подписка на данный курс выполнена успешно!'}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"detail": "Подписка на данный курс выполнена успешно!"},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class SubscriptionCourseDestroyAPIView(generics.DestroyAPIView):
@@ -84,11 +96,14 @@ class SubscriptionCourseDestroyAPIView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        course_id = self.kwargs.get('course_id')
+        course_id = self.kwargs.get("course_id")
         course = Course.objects.get(pk=course_id)
         return Subscription.objects.get(user=self.request.user, course=course)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({'detail': 'Вы успешно отписались от данного курса!'}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Вы успешно отписались от данного курса!"},
+            status=status.HTTP_200_OK,
+        )
