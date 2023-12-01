@@ -1,4 +1,4 @@
-Платформа для онлайн приложения - бэкенд-часть LMS веб-приложения
+Платформа для онлайн приложения - бэкенд-часть веб-приложения (online_learning_platform)
 
 Описание
 
@@ -30,17 +30,65 @@
     - Payment (платежи)
     - Subscription (обновление подписок)
 
+Запуск проекта в Docker:
+
+    Для работы с переменными окружения необходимо создать файл .env и заполнить его согласно файлу .env.example:
+
+        SECRET_KEY=
+
+        POSTGRES_HOST=db
+        POSTGRES_DB=
+        POSTGRES_USER=
+        POSTGRES_PASSWORD=
+        POSTGRES_PORT=5432
+
+        STRIPE_API_KEY=
+
+        EMAIL_HOST_USER=
+        EMAIL_HOST_PASSWORD=
+
+        CELERY_BROKER_URL=redis://redis:6379
+        CELERY_RESULT_BACKEND=redis://redis:6379
+
+    Для создания образа из Dockerfile и запуска контейнера запустить команду:
+
+        docker-compose up --build
+
+        или
+
+        docker-compose up -d --build (для запуска в фоновом режиме)
+
 Запуск приложения в локальной сети:
 
-Для начала необходимо настроить виртуальное окружение и установить все необходимые зависимости с помощью команд:
+    Для начала необходимо настроить виртуальное окружение и установить все необходимые зависимости с помощью команд:
 
-    python -m venv venv
+        python -m venv venv
 
-    source venv/bin/activate
+        source venv/bin/activate
 
-    pip install -r requirements.txt
+        pip install -r requirements.txt
 
-Для работы с переменными окружениями необходимо создать файл .env и заполнить его согласно файлу .env.sample
+    Для работы с переменными окружения необходимо создать файл .env и заполнить его согласно файлу .env.sample:
+
+        SECRET_KEY=
+
+        POSTGRES_HOST=localhost
+        POSTGRES_DB=
+        POSTGRES_USER=
+        POSTGRES_PASSWORD=
+        POSTGRES_PORT=5432
+
+        STRIPE_API_KEY=
+
+        EMAIL_HOST_USER=
+        EMAIL_HOST_PASSWORD=
+
+        CELERY_BROKER_URL=redis://localhost:6379
+        CELERY_RESULT_BACKEND=redis://localhost:6379
+
+Выполнить миграции:
+
+    python3 manage.py migrate
 
 Для заполнения БД запустить команду:
 
